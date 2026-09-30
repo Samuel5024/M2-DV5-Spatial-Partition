@@ -42,33 +42,59 @@ namespace SpatialPartitionPattern
         }
 
         // Get the closest enemy from the grid
-        public Soldier FindClosestEnemy(Soldier friendlySoldier)
+        public Soldier FindClosestEnemy(Soldier friendlySoldier, bool useSpatialPartition)
         {
+            if(!useSpatialPartition)
+            {
+                return null;
+            }
+
             // Determine which grid cell the friendly soldier is in
-            int cellX = (int)(friendlySoldier.soldierTrans.position.x / cellSize);
-            int cellZ = (int)(friendlySoldier.soldierTrans.position.z / cellSize);
+            int centerCellX = (int)(friendlySoldier.soldierTrans.position.x / cellSize);
+            int centerCellZ = (int)(friendlySoldier.soldierTrans.position.z / cellSize);
 
             // Get the first enemy in grid
-            Soldier enemy = cells[cellX, cellZ];
+            // Soldier enemy = cells[cellX, cellZ];
 
             // Find the closest soldier of all in the linked list
             Soldier closestSoldier = null;
             float bestDistSqr = Mathf.Infinity;
 
-            // Loop through the linked list
-            while(enemy != null)
+            // Loop through a 3*3 neighborhood of cells
+            for(int x = -1; x < 1; x++)
             {
-                // The distance sqr between the soldier and this enemy
-                float distSqr = (enemy.soldierTrans.position - friendlySoldier.soldierTrans.position).sqrMagnitude;
-
-                // If this distance is better than the previous est distance, then we have found an enemy that's closer
-                if(distSqr < bestDistSqr)
+                for(int z = -1; z < 1; z++)
                 {
-                    bestDistSqr = distSqr;
-                    closestSoldier = enemy;
+                    int targetCellX = centerCellX + x;
+                    int targetCellZ = centerCellZ + z;
+
+                    // GUARD CLAUSE: if the cell is out of bounds, continue
+                    if(targetCellX < 0 || targetCellX >= cells.GetLength(0) ||
+                        targetCellZ < 0 || targetCellZ >= cells.GetLength(1))
+                        {
+                            continue;
+                        }
+
+                    Soldier enemy = cells[targetCellX, targetCellZ];
+
+                    // Loop through linked list in this cell
+                    while(enemy != null)
+                    {
+                        float distSqr = (enemy.soldierTrans.position - friendlySoldier.soldierTrans.position).sqrMagnitue;
+                        
+                        if(distSqr >=  bestDistSqr)
+                        {
+                            enemy = enemy.nextSoldier;
+                            continue;
+                        }
+
+                        // If code reaches here, we found a closer enemy
+                        bestDistSqr = distSqr;
+                        closestSoldier = enemy;
+
+                        enemy = enemy.nextSoldier;
+                    }
                 }
-                // Get the next enemy in the list
-                enemy = enemy.nextSoldier;
             }
             return closestSoldier;
         }
