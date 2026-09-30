@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SpatialPartitionPattern.Grid
+namespace SpatialPartitionPattern
 {
     public class GameController : MonoBehaviour
     {
