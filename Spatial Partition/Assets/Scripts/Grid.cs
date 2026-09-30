@@ -59,7 +59,7 @@ namespace SpatialPartitionPattern
             while(enemy != null)
             {
                 // The distance sqr between the soldier and this enemy
-                float distSqr = (enemy.soldierTrans.position - friendlySoldier.soldierTrans.positon).sqrMagnitude;
+                float distSqr = (enemy.soldierTrans.position - friendlySoldier.soldierTrans.position).sqrMagnitude;
 
                 // If this distance is better than the previous est distance, then we have found an enemy that's closer
                 if(distSqr < bestDistSqr)
@@ -70,6 +70,44 @@ namespace SpatialPartitionPattern
                 // Get the next enemy in the list
                 enemy = enemy.nextSoldier;
             }
+            return closestSoldier;
+        }
+
+        // A soldier in the grid has moved, so see if we need to update in which grid the soldier is
+        public void Move(Soldier soldier, Vector3 oldPos)
+        {
+            // See which cell it was in
+            int oldCellX = (int)(oldPos.x / cellSize);
+            int oldCellZ = (int)(oldPos.z / cellSize);
+
+            // See which cell it is in now
+            int cellX = (int)(soldier.soldierTrans.position.x / cellSize);
+            int cellZ = (int)(soldier.soldierTrans.position.z / cellSize);
+
+            // If it didn't change cell, we are donw
+            if(oldCellX == cellX && oldCellZ == cellZ)
+            {
+                return;
+            }
+
+            // Unlink it from the list of its old cell
+            if(soldier.previousSoldier != null)
+            {
+                soldier.previousSoldier.nextSoldier = soldier.nextSoldier;
+            }
+            if(soldier.nextSoldier != null)
+            {
+                soldier.nextSoldier.previousSoldier = soldier.previousSoldier;
+            }
+
+            // If it's the head of a list, remove it
+            if (cells[oldCellX, oldCellZ] == soldier)
+            {
+                cells[oldCellX, oldCellZ] = soldier.nextSoldier;
+            }
+
+            // Add it back to the grid at its new cell
+            Add(soldier);
         }
     }
 }

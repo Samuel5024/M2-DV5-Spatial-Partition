@@ -111,17 +111,16 @@ namespace SpatialPartitionPattern
         Soldier FindClosestEnemySlow(Soldier soldier)
         {
             Soldier closestEnemy = null;
-
             float bestDistSqr = Mathf.Infinity;
 
             // Loop through all enemies
-            for(int i = 0; i < enemySoldiers.Count; i++)
+            for (int i = 0; i < enemySoldiers.Count; i++)
             {
                 // The distance sqr between the soldier and this enemy
-                float distSqr = (soldier.soldierTrans.position - enemySoldiers[i].soldier.Trans.position).sqrMagnitude;
+                float distSqr = (soldier.soldierTrans.position - enemySoldiers[i].soldierTrans.position).sqrMagnitude;
 
                 // If the distance is better than the previous best distance, then we have found an enemy that's closer
-                if(distSqr < bestDistSqr)
+                if (distSqr < bestDistSqr)
                 {
                     bestDistSqr = distSqr;
                     closestEnemy = enemySoldiers[i];
