@@ -112,7 +112,10 @@ namespace SpatialPartitionPattern
             }
 
             elapsedTime += Time.deltaTime;
-            timerText.text = elapsedTime.ToString();
+            int minutes = Mathf.FloorToInt(elapsedTime / 60);
+            int seconds = Mathf.FloorToInt(elapsedTime % 60);
+            // Format time to read as 01:01 instead of a long decimal
+            timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
 
         // Find the closest enemy - slow version
