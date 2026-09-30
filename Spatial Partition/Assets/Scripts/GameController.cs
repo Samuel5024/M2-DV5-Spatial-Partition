@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 namespace SpatialPartitionPattern
 {
@@ -33,6 +34,10 @@ namespace SpatialPartitionPattern
 
         // The Spatial Partition Grid
         Grid grid;
+
+        // Timer elements
+        [SerializeField] TextMeshProUGUI timerText;
+        float elapsedTime;
 
         void Start()
         {
@@ -105,6 +110,9 @@ namespace SpatialPartitionPattern
                     friendlySoldiers[i].Move(closestEnemy);
                 }
             }
+
+            elapsedTime += Time.deltaTime;
+            timerText.text = elapsedTime.ToString();
         }
 
         // Find the closest enemy - slow version
