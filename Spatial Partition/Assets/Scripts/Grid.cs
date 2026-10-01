@@ -20,6 +20,11 @@ namespace SpatialPartitionPattern
             cells = new Soldier[numberOfCells, numberOfCells];
         }
 
+        public void Clear()
+        {
+            System.Array.Clear(cells, 0, cells.Length);
+        }
+
         // Add a unity to the grid
         public void Add(Soldier soldier)
         {
@@ -100,12 +105,8 @@ namespace SpatialPartitionPattern
         }
 
         // A soldier in the grid has moved, so see if we need to update in which grid the soldier is
-        public void Move(Soldier soldier, Vector3 oldPos, bool useSpatialPartition)
+        public void Move(Soldier soldier, Vector3 oldPos)
         {
-            if(!useSpatialPartition)
-            {
-                return;
-            }
 
             // See which cell it was in
             int oldCellX = (int)(oldPos.x / cellSize);
