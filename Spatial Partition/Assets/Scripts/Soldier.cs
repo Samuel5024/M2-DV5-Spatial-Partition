@@ -18,7 +18,7 @@ namespace SpatialPartitionPattern
         public Soldier nextSoldier;
 
         // The enemy doesn't need any outside information
-        public virtual void Move(bool useSpatialPartition)
+        public virtual void Move()
         {
 
         }

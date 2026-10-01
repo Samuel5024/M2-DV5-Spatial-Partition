@@ -36,14 +36,14 @@ namespace SpatialPartitionPattern
         }
 
         // Move the cube randomly across the map
-        public override void Move(bool useSpatialPartition)
+        public override void Move()
         {
             oldPos = soldierTrans.position;
             // Move towards the target
             soldierTrans.Translate(Vector3.forward * Time.deltaTime * walkSpeed);
 
             // See if the cube has moved to another cell
-            grid.Move(this, oldPos, useSpatialPartition);
+            grid.Move(this, oldPos);
 
             // Save the old position
             oldPos = soldierTrans.position;

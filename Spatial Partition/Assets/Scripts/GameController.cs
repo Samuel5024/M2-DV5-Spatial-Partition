@@ -41,6 +41,7 @@ namespace SpatialPartitionPattern
         float elapsedTime;
 
         [SerializeField] private Toggle partitionToggle;
+        private bool lastPartitionState;
 
         void Start()
         {
@@ -75,14 +76,26 @@ namespace SpatialPartitionPattern
                 // Parent it
                 newFriendly.transform.parent = friendlyParent;
             }
+            lastPartitionState = partitionToggle.isOn; // set initial toggle state
         }
 
         void Update()
         {
+            if(partitionToggle.isOn && !lastPartitionState) // did we just turn spatial partitoning back on
+            {
+                grid.Clear();
+                
+                foreach(Soldier enemy in enemySoldiers)
+                {
+                    grid.Add(enemy);
+                }
+            }
+            lastPartitionState = partitionToggle.isOn;
+
             // Move the enemies
             for(int i = 0; i < enemySoldiers.Count; i++)
             {
-                enemySoldiers[i].Move(partitionToggle.isOn);
+                enemySoldiers[i].Move();
             }
 
             // Reset Material of the closest enemies
