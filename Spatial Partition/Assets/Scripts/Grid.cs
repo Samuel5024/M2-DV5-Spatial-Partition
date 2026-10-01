@@ -61,9 +61,9 @@ namespace SpatialPartitionPattern
             float bestDistSqr = Mathf.Infinity;
 
             // Loop through a 3*3 neighborhood of cells
-            for(int x = -1; x < 1; x++)
+            for(int x = -1; x <= 1; x++)
             {
-                for(int z = -1; z < 1; z++)
+                for(int z = -1; z <= 1; z++)
                 {
                     int targetCellX = centerCellX + x;
                     int targetCellZ = centerCellZ + z;
@@ -80,7 +80,7 @@ namespace SpatialPartitionPattern
                     // Loop through linked list in this cell
                     while(enemy != null)
                     {
-                        float distSqr = (enemy.soldierTrans.position - friendlySoldier.soldierTrans.position).sqrMagnitue;
+                        float distSqr = (enemy.soldierTrans.position - friendlySoldier.soldierTrans.position).sqrMagnitude;
                         
                         if(distSqr >=  bestDistSqr)
                         {
@@ -100,8 +100,13 @@ namespace SpatialPartitionPattern
         }
 
         // A soldier in the grid has moved, so see if we need to update in which grid the soldier is
-        public void Move(Soldier soldier, Vector3 oldPos)
+        public void Move(Soldier soldier, Vector3 oldPos, bool useSpatialPartition)
         {
+            if(!useSpatialPartition)
+            {
+                return;
+            }
+
             // See which cell it was in
             int oldCellX = (int)(oldPos.x / cellSize);
             int oldCellZ = (int)(oldPos.z / cellSize);
@@ -110,7 +115,6 @@ namespace SpatialPartitionPattern
             int cellX = (int)(soldier.soldierTrans.position.x / cellSize);
             int cellZ = (int)(soldier.soldierTrans.position.z / cellSize);
 
-            // If it didn't change cell, we are donw
             if(oldCellX == cellX && oldCellZ == cellZ)
             {
                 return;

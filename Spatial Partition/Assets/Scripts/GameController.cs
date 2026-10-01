@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.UI;
 
 namespace SpatialPartitionPattern
 {
@@ -38,6 +39,8 @@ namespace SpatialPartitionPattern
         // Timer elements
         [SerializeField] TextMeshProUGUI timerText;
         float elapsedTime;
+
+        [SerializeField] private Toggle partitionToggle;
 
         void Start()
         {
@@ -79,13 +82,13 @@ namespace SpatialPartitionPattern
             // Move the enemies
             for(int i = 0; i < enemySoldiers.Count; i++)
             {
-                enemySoldiers[i].Move();
+                enemySoldiers[i].Move(partitionToggle.isOn);
             }
 
             // Reset Material of the closest enemies
-            for (int i = 0; i < closestEnemies.Count; i++)
+            foreach(Soldier enemy in closestEnemies)
             {
-                closestEnemies[i].soldierMeshRenderer.material = enemyMaterial;
+                enemy.soldierMeshRenderer.material = enemyMaterial;
             }
 
             // Reset the list with the closest enemies
@@ -94,21 +97,25 @@ namespace SpatialPartitionPattern
             // For each friendly, find the closest enemy and change its color and chase it
             for(int i = 0; i < friendlySoldiers.Count; i++)
             {
-                // Soldier closestEnemy = FindClosestEnemySlow(friendlySolders[i]);
+                Soldier closestEnemy = null;
 
-                // The fast version with spatial partition
-                Soldier closestEnemy = grid.FindClosestEnemy(friendlySoldiers[i]);
-
-                // If we found an enemy
-                if(closestEnemy != null)
+                if(partitionToggle.isOn)
                 {
-                    // Change material
-                    closestEnemy.soldierMeshRenderer.material = closestEnemyMaterial;
-                    closestEnemies.Add(closestEnemy);
-
-                    // Move the friendly in the direction of the enemy
-                    friendlySoldiers[i].Move(closestEnemy);
+                    closestEnemy = grid.FindClosestEnemy(friendlySoldiers[i], true);
                 }
+                else
+                {
+                    closestEnemy = FindClosestEnemySlow(friendlySoldiers[i]);
+                }
+                if (closestEnemy == null)
+                {
+                    continue;
+                }
+
+                closestEnemy.soldierMeshRenderer.material = closestEnemyMaterial;
+                closestEnemies.Add(closestEnemy);
+                // move in the direction of the enemy
+                friendlySoldiers[i].Move(closestEnemy);
             }
 
             elapsedTime += Time.deltaTime;
